@@ -70,6 +70,7 @@ form.addEventListener('submit', async event => {
   }
 
   setSubmitting(true);
+  showFeedback('Enviando tus datos de inscripción...', 'info');
 
   try {
     const response = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE_NAME}`, {
@@ -95,7 +96,7 @@ form.addEventListener('submit', async event => {
     }
 
     form.reset();
-    showFeedback('Inscripción registrada correctamente. Buenísimo, ya quedó cargada en el catálogo ECCIA.', 'success');
+    showFeedback('Inscripción registrada correctamente. Mantenete atento a tu correo durante los próximos días.', 'success');
   } catch (error) {
     showFeedback(`No se pudo registrar la inscripción. ${error.message}`, 'error');
   } finally {
@@ -150,7 +151,9 @@ function clean(value) {
 
 function setSubmitting(isSubmitting) {
   submitButton.disabled = isSubmitting;
-  submitButton.textContent = isSubmitting ? 'Registrando...' : 'Registrar inscripción';
+  submitButton.classList.toggle('is-loading', isSubmitting);
+  submitButton.setAttribute('aria-busy', String(isSubmitting));
+  submitButton.textContent = isSubmitting ? 'Enviando datos...' : 'Registrar inscripción';
 }
 
 function showFeedback(message, type) {
